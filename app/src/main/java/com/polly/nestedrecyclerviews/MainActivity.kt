@@ -5,12 +5,8 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.horde.view.*
-import kotlinx.android.synthetic.main.monster.view.*
 import java.lang.IllegalArgumentException
 
 class MainActivity : AppCompatActivity() {
@@ -49,9 +45,9 @@ class HordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<RowVi
     private val hordeViewType = 1
     private val monsterViewType = 2
 
-    private val rowTypes: List<RowType>
+    private val rows: List<Row>
     init {
-        val items = mutableListOf<RowType>()
+        val items = mutableListOf<Row>()
         hordes.forEach { horde ->
             if(horde.embedded) horde.monsters.forEach { monster ->
                 items.add(monster)
@@ -59,39 +55,38 @@ class HordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<RowVi
                 items.add(horde)
             }
         }
-        rowTypes = items.toList()
+        rows = items.toList()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
-        val viewHolder = when (viewType) {
+        return when (viewType) {
             hordeViewType -> HordeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.horde, parent, false))
-            monsterViewType -> MonsterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.monster, parent, false))
+            monsterViewType -> MonsterCreator.create(parent)
             else -> { throw IllegalArgumentException()}
         }
-        return viewHolder
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (rowTypes.get(position)) {
+        return when (rows.get(position)) {
             is Horde -> hordeViewType
             is Monster -> monsterViewType
         }
     }
 
-    override fun getItemCount(): Int = rowTypes.size
+    override fun getItemCount(): Int = rows.size
 
     override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
         when (holder) {
             is HordeViewHolder -> {
-                val horde = rowTypes[position] as Horde
+                val horde = rows[position] as Horde
                 val context = holder.hordeRecyclerView.context
                 val monsters = horde.monsters
                 holder.hordeRecyclerView.adapter = MonsterAdapter(monsters)
                 holder.hordeRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
             is MonsterViewHolder -> {
-                val monster = rowTypes[position] as Monster
-                holder.monsterNameText.text = monster.name
+                val monster = rows[position] as Monster
+                MonsterBinder.bind(holder, monster)
             }
         }
 
@@ -99,23 +94,10 @@ class HordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<RowVi
 
 }
 
-sealed class RowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-class HordeViewHolder(itemView: View) : RowViewHolder(itemView) {
-
-    val hordeRecyclerView : RecyclerView = itemView.horde_recycler_view
-}
-
-class MonsterViewHolder(itemView: View) : RowViewHolder(itemView) {
-
-    val monsterNameText: TextView = itemView.monster_name
-}
-
 class MonsterAdapter(private val monsters: List<Monster>) : RecyclerView.Adapter<MonsterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonsterViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.monster, parent, false)
-        return MonsterViewHolder(view)
+        return MonsterCreator.create(parent)
     }
 
     override fun getItemCount(): Int {
@@ -123,7 +105,19 @@ class MonsterAdapter(private val monsters: List<Monster>) : RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: MonsterViewHolder, position: Int) {
-        holder.monsterNameText.text = monsters[position].name
+        MonsterBinder.bind(holder, monsters[position])
     }
+}
 
+object MonsterCreator {
+    fun create(parent: ViewGroup) : MonsterViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.monster, parent, false)
+        return MonsterViewHolder(view)
+    }
+}
+
+object MonsterBinder {
+    fun bind(holder: MonsterViewHolder, monster: Monster) {
+        holder.monsterNameText.text = monster.name
+    }
 }
