@@ -30,17 +30,17 @@ class MainActivity : AppCompatActivity() {
                 Monster("Zombie brain eater"),
                 Monster("Spike"))
 
-        val hordes = listOf<Horde>(
+        val hordes = listOf(
                 Horde(friendlyHorde),
-                Horde(fightyHorde),
-                Horde(undeadHorde, true))
+                Horde(fightyHorde, hoistedToTopLevel = true),
+                Horde(undeadHorde, hoistedToTopLevel = true))
 
         outer_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         outer_recycler_view.adapter = HordeAdapter(hordes)
     }
 }
 
-class HordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<RowViewHolder>() {
+class HordeAdapter(hordes: List<Horde>) : RecyclerView.Adapter<RowViewHolder>() {
 
     private val hordeViewType = 1
     private val monsterViewType = 2
@@ -49,7 +49,7 @@ class HordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<RowVi
     init {
         val items = mutableListOf<Row>()
         hordes.forEach { horde ->
-            if(horde.embedded) horde.monsters.forEach { monster ->
+            if(horde.hoistedToTopLevel) horde.monsters.forEach { monster ->
                 items.add(monster)
             } else {
                 items.add(horde)
