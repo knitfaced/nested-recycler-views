@@ -15,17 +15,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val friendlyHorde = listOf<Monster>(
+        val friendlyHorde = listOf(
                 Monster("Big blue monster"),
                 Monster("Terence"),
                 Monster("Fluffy"))
 
-        val fightyHorde = listOf<Monster>(
+        val fightyHorde = listOf(
                 Monster("Medusa"),
                 Monster("Basilisk"),
                 Monster("Manticore"))
 
-        val undeadHorde = listOf<Monster>(
+        val undeadHorde = listOf(
                 Monster("Dracula"),
                 Monster("Zombie brain eater"),
                 Monster("Spike"))
