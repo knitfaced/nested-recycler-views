@@ -39,8 +39,8 @@ class CompoundAdapterActivity : AppCompatActivity()  {
 
 
         val adapter = CompoundAdapter()
-        adapter.registerAdapter(EmbeddedAdapter(hordes) as RecyclerView.Adapter<RowViewHolder>)
-        adapter.registerAdapter(CompoundMonsterAdapter(undeadHorde) as RecyclerView.Adapter<RowViewHolder>)
+        adapter.registerAdapter(EmbeddedAdapter(hordes))
+        adapter.registerAdapter(CompoundMonsterAdapter(undeadHorde))
         outer_recycler_view.adapter = adapter
     }
 }
@@ -115,8 +115,8 @@ class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
         return 0
     }
 
-    fun registerAdapter(adapter: RecyclerView.Adapter<RowViewHolder>) {
-        adapters.add(adapter)
+    fun registerAdapter(adapter: RecyclerView.Adapter<*>) {
+        adapters.add(adapter as RecyclerView.Adapter<RowViewHolder>)
     }
 
 }
