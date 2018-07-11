@@ -94,23 +94,23 @@ class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
     override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
         var startIndex = 0
         adapters.forEach {
-            val endIndex = startIndex + it.itemCount - 1
-            if (position in startIndex..endIndex) {
+            val endIndex = startIndex + it.itemCount
+            if (position in startIndex until endIndex) {
                 it.onBindViewHolder(holder, position - startIndex)
                 return
             }
-            startIndex = endIndex + 1
+            startIndex = endIndex
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         var startIndex = 0
         adapters.forEachIndexed { index, adapter ->
-            val endIndex = startIndex + adapter.itemCount - 1
-            if (position in startIndex..endIndex) {
+            val endIndex = startIndex + adapter.itemCount
+            if (position in startIndex until endIndex) {
                 return index
             }
-            startIndex = endIndex + 1
+            startIndex = endIndex
         }
         return 0
     }
