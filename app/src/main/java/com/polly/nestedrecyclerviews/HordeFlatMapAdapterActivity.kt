@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class CompoundAdapterActivity : AppCompatActivity()  {
+class HordeFlatMapAdapterActivity : AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +36,14 @@ class CompoundAdapterActivity : AppCompatActivity()  {
                 Horde(undeadHorde, hoistedToTopLevel = true, name = "undead horde"))
 
         outer_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-
-//        val adapter = CompoundAdapter()
-//        adapter.registerAdapter(ChildHordeAdapter(hordes))
-//        adapter.registerAdapter(ChildMonsterAdapter(undeadHorde))
-//        outer_recycler_view.adapter = ChildHordeAdapter(hordes)
+        outer_recycler_view.adapter = HordeFlatMapAdapter(hordes)
     }
 }
 
-class CompoundHordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<MonsterViewHolder>() {
+class HordeFlatMapAdapter(private val hordes: List<Horde>) : RecyclerView.Adapter<MonsterViewHolder>() {
 
-    val TITLE_ROW = 0
-    val NORMAL_ROW = 1
+    private val TITLE_ROW = 0
+    private val NORMAL_ROW = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonsterViewHolder {
 
@@ -66,7 +61,14 @@ class CompoundHordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: MonsterViewHolder, position: Int) {
         val monster = hordes.flatMap { it.monsters }[position]
         holder.monsterNameText.text = monster.name
+        holder.titleText?.text = getHordeForPosition(position)?.name
+    }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (isTitleRow(position)) TITLE_ROW else NORMAL_ROW
+    }
+
+    private fun getHordeForPosition(position: Int): Horde? {
         var horde: Horde? = null
         var flatMapIndex = 0
         hordes.forEach { currentHorde ->
@@ -77,12 +79,7 @@ class CompoundHordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapt
                 flatMapIndex++
             }
         }
-
-        holder.titleText?.text = horde?.name
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (isTitleRow(position)) TITLE_ROW else NORMAL_ROW
+        return horde
     }
 
     private fun isTitleRow(position: Int): Boolean {
@@ -100,33 +97,3 @@ class CompoundHordeAdapter(private val hordes: List<Horde>) : RecyclerView.Adapt
         return isTitleRow
     }
 }
-
-class CompoundMonsterAdapter(private val monsters: List<Monster>) : RecyclerView.Adapter<MonsterViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonsterViewHolder {
-        return MonsterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.monster, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return monsters.size
-    }
-
-    override fun onBindViewHolder(holder: MonsterViewHolder, position: Int) {
-        holder.monsterNameText.text = monsters[position].name
-    }
-}
-//
-//class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
-//
-//    }
-//
-//    override fun getItemCount(): Int {
-//
-//    }
-//
-//    override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
-//
-//    }
-//
-//}
