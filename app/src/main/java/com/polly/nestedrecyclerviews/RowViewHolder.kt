@@ -7,14 +7,12 @@ import com.polly.nestedrecyclerviews.R.id.monster_name
 import com.polly.nestedrecyclerviews.R.id.title_text
 import kotlinx.android.synthetic.main.horde.view.*
 
-sealed class RowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-class HordeViewHolder(itemView: View) : RowViewHolder(itemView) {
+class HordeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val hordeRecyclerView : RecyclerView = itemView.horde_recycler_view
 }
 
-class MonsterViewHolder(itemView: View) : RowViewHolder(itemView) {
+class MonsterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val monsterNameText: TextView = itemView.findViewById(monster_name)
     val titleText: TextView? = itemView.findViewById(title_text)

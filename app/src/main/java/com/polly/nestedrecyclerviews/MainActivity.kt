@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class HordeAdapter(hordes: List<Horde>) : RecyclerView.Adapter<RowViewHolder>() {
+class HordeAdapter(hordes: List<Horde>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val hordeViewType = 1
     private val monsterViewType = 2
@@ -58,7 +58,7 @@ class HordeAdapter(hordes: List<Horde>) : RecyclerView.Adapter<RowViewHolder>() 
         rows = items.toList()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             hordeViewType -> HordeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.horde, parent, false))
             monsterViewType -> MonsterCreator.create(parent)
@@ -75,7 +75,7 @@ class HordeAdapter(hordes: List<Horde>) : RecyclerView.Adapter<RowViewHolder>() 
 
     override fun getItemCount(): Int = rows.size
 
-    override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is HordeViewHolder -> {
                 val horde = rows[position] as Horde

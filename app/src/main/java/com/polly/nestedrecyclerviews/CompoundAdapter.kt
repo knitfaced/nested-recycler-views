@@ -3,7 +3,7 @@ package com.polly.nestedrecyclerviews
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
-class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
+class CompoundAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     enum class ViewType {
         EMBEDDED, MONSTER, COMPOUND_HORDE_TITLE_ROW, COMPOUND_HORDE_NORMAL_ROW;
@@ -18,9 +18,9 @@ class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
 
     class InvalidViewTypeException : Exception("Adapters used in ${CompoundAdapter::class.java.simpleName} must override getItemViewType() to return a value from ${ViewType::class.java.simpleName}")
 
-    private val adapters = mutableListOf<RecyclerView.Adapter<RowViewHolder>>()
+    private val adapters = mutableListOf<RecyclerView.Adapter<RecyclerView.ViewHolder>>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (ViewType.values().filter { it.value == viewType }.size != 1) {
             throw InvalidViewTypeException()
         }
@@ -40,7 +40,7 @@ class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
         return adapters.fold(0) { total, next -> total + next.itemCount }
     }
 
-    override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         var startIndex = 0
         adapters.forEach { adapter ->
             val endIndex = startIndex + adapter.itemCount
@@ -67,7 +67,7 @@ class CompoundAdapter : RecyclerView.Adapter<RowViewHolder>() {
     }
 
     fun registerAdapter(adapter: RecyclerView.Adapter<*>) {
-        adapters.add(adapter as RecyclerView.Adapter<RowViewHolder>)
+        adapters.add(adapter as RecyclerView.Adapter<RecyclerView.ViewHolder>)
     }
 
 }
